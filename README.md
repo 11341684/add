@@ -1,5 +1,5 @@
 # add
-如何证明1+1=2？如何用js不用+号实现加法？让我用JS告诉你为什么1+1=2
+如何证明1+1=2？如何用js不显式的用+号实现加法？让我用JS告诉你为什么1+1=2
 
 无聊到思考为什么1+1=2
 下面代码只讨论实现，不讨论效率优化。
@@ -12,16 +12,19 @@ function add(a,b) {
 }
 ```
 
-//也是求和
+
+既然不能用+号，那我们用number类型就失去了意义，虚拟数字类型登场，虚拟数字代替数字，add函数代替+号 自定义isNaN代替isNaN,自定义Max函数代替Math.max。
+
 ```
 class NumberString {
-    constructor(number,length){
+    //唯一的目的就是将数字变成字符串
+    constructor(number){
         this.value="";
         if(typeof number!=='number'&&typeof number!=='string')throw new Error(String(number).concat(' is not a number type or string type'));
         if(this.isNaN(number))throw new Error(String(number).concat(' is not a number'));
-        let numberS=number.toString();
-        this.value=this.padStart(numberS,length);
+        this.value=number.toString();
     }
+    // 要确保后面两个数都是虚拟数字类型
     static add(number1,number2){
         if(!number1||!number2){
             throw new Error("number 必填哦");
@@ -37,6 +40,7 @@ class NumberString {
     add(number){
         return NumberString.add(this,number);
     }
+    //模拟实现isNaN函数，遍历每一个字符，确保每一个字符都在flag链式结构中，否则就不是数字
     isNaN(number=this.value){
         if(typeof number!=='string'){
             number=String(number);
@@ -64,38 +68,47 @@ class NumberString {
         }
         return false
     }
+    //加法的核心逻辑
     _add(number){
+        //求两个数字，哪个数字大，返回值是最大的那个数
         let max=this.isMax(number,true);
         if(max){
+            //如果max为空，则是说明相等，否则，将两个数的长度强行相等，长度小的前面补flag.value 也就是虚无
             if(max===number){
-                this.value=this.padStart(this.value,number.value.length)
+                this.value=this.padStart(this,number)
             }else {
-                number.value=number.padStart(number.value,this.value.length);
+                number.value=number.padStart(number,this);
             }
         }
+        //反转虚拟数字，并用遍历器，一次读取每一位数
         let value=this.value.split("").reverse().join("")[Symbol.iterator]();
         let augend=number.value.split("").reverse().join("")[Symbol.iterator]();
         let flag = NumberString.flag;
         let result=[];
         let carry=flag;
         while (true){
+            //遍历每一个数字
             let nextCarry=flag;
             let a=value.next();
             let b=augend.next();
             if(a.done||b.done){
+                //如果执行完毕，判断是否有进位的情况，有的话就把进位放到第一个。
                 if(flag.value!==carry.value){
                     result.unshift(carry.value);
                 }
                 break
             }else {
                 let cur=flag;
+                //获取加数的位置
                 let ap=NumberString.getPosition(a.value);
                 while (true){//加数和被加数相加
+                    //遍历链式结构，如果当前位置和被加数的值是一样的，跳出循环，否则移动当前引用到下一个虚拟数字
                     if(cur.value===b.value){
                         break
                     }else {
                         cur=cur.next;
                         ap=ap.next;
+                        //链到头了？进位一下。重头再来
                         if(!ap){
                             nextCarry=nextCarry.next;
                             ap=flag;
@@ -104,25 +117,31 @@ class NumberString {
 
                 }
                 cur=flag;//重置
-                while (true){//进位加
+                while (true){//进位和前面的和相加
+                    //遍历链式结构，如果当前位置和进位数的值是一样的，跳出循环，否则移动当前引用到下一个虚拟数字
                     if(cur.value===carry.value){
                         break;
                     }else {
                         cur=cur.next;
                         ap=ap.next;
+                        //链到头了？进位一下。重头再来
                         if(!ap){
                             nextCarry=nextCarry.next;
                             ap=flag;
                         }
                     }
                 }
+                //进位保存下，下一项的时候要用
                 carry=nextCarry;
+                //每一项的保存在结果中
                 result.unshift(ap.value);
             }
         }
+        //将和输出
         return result.join("");
     }
     static getPosition(str){
+        //遍历当前数字在链式结构的位置，也就是0=top，1=top.next，2=top.next.next;
         let cur=NumberString.flag;
         while (cur){
             if(cur.value===str){
@@ -133,12 +152,14 @@ class NumberString {
         }
         return cur
     }
-    padStart(value=this.value,len,str='0'){
-        while (value.length<len){
+    //补虚拟0操作
+    padStart(value=this,number,str=NumberString.flag.value){
+        while (value.isMax(number,true)){
             value=str.concat(value);
         }
         return value
     }
+    //判断那个数字大
     isMax(number,onlyLength){
         let cur=NumberString.flag;
         let value=this.value[Symbol.iterator]();
@@ -147,8 +168,10 @@ class NumberString {
         while (true){
             let vn=value.next();
             let an=augend.next();
+            //谁先结束谁小
             if(vn.done||an.done){
                 if(vn.done===an.done){
+                    //长度相同则首字符大的为大
                     return unitMax
                 }
                 if(vn.done){
@@ -159,6 +182,7 @@ class NumberString {
             if(!vn.done&&an.done){
                 return this
             }
+            //谁的首字符大谁大
             if(vn.value!==an.value&&!unitMax&&!onlyLength){
                 while (cur.value){
                     if(vn.value===cur.value){
