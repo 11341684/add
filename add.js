@@ -1,19 +1,6 @@
-# add
-如何证明1+1=2？如何用js不用+号实现加法？让我用JS告诉你为什么1+1=2
-
-无聊到思考为什么1+1=2
-下面代码只讨论实现，不讨论效率优化。
-
-
- 先写一个求和
-```
 function add(a,b) {
     return a+b
 }
-```
-
-//也是求和
-```
 class NumberString {
     constructor(number,length){
         this.value="";
@@ -210,4 +197,3 @@ NumberString.flag = {
     const b= new NumberString("九");
     console.log(a.add(b));
 })();
-```
