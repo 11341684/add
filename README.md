@@ -75,9 +75,9 @@ class NumberString {
         if(max){
             //如果max为空，则是说明相等，否则，将两个数的长度强行相等，长度小的前面补flag.value 也就是虚无
             if(max===number){
-                this.value=this.padStart(this,number)
+                this.padStart(this,number)
             }else {
-                number.value=number.padStart(number,this);
+                number.padStart(number,this);
             }
         }
         //反转虚拟数字，并用遍历器，一次读取每一位数
@@ -153,12 +153,11 @@ class NumberString {
         return cur
     }
     //补虚拟0操作
-    padStart(value=this,number,str=NumberString.flag.value){
-        let newValue=value.value;
-        while (value.isMax(number,true)){
-            newValue=str.concat(newValue);
+    padStart(_this=this,number,str=NumberString.flag.value){
+        while (_this.isMax(number,true)){
+            _this.value=str.concat(_this.value);
         }
-        return newValue
+        return _this.value
     }
     //判断那个数字大
     isMax(number,onlyLength){
