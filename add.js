@@ -141,10 +141,11 @@ class NumberString {
     }
     //补虚拟0操作
     padStart(value=this,number,str=NumberString.flag.value){
+        let newValue=value.value;
         while (value.isMax(number,true)){
-            value=str.concat(value);
+            newValue=str.concat(newValue);
         }
-        return value
+        return newValue
     }
     //判断那个数字大
     isMax(number,onlyLength){
@@ -217,7 +218,7 @@ NumberString.flag = {
     }
 };
 (function () {
-    const a= new NumberString("九");
+    const a= new NumberString("九五");
     const b= new NumberString("九");
     console.log(a.add(b));
 })();
