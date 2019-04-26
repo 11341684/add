@@ -186,38 +186,23 @@ class NumberString {
     }
 }
 NumberString.flag = {
-    value:"零",
+    value:"0",
     next:{
-        value:"一",
+        value:"1",
         next:{
-            value:"二",
+            value:"2",
             next:{
-                value:"三",
+                value:"3",
                 next:{
-                    value:"四",
-                    next:{
-                        value:"五",
-                        next:{
-                            value:"六",
-                            next:{
-                                value:"七",
-                                next:{
-                                    value:"八",
-                                    next:{
-                                        value:"九",
-                                        next:null
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    value:"4",
+                    next:null
                 }
             }
         }
     }
 };
 (function () {
-    const a= new NumberString("九五");
-    const b= new NumberString("九");
+    const a= new NumberString("23333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333");
+    const b= new NumberString("3");
     console.log(a.add(b));
 })();
