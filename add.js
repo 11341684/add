@@ -61,7 +61,7 @@ class NumberString {
         if (this.system!==number.system)throw new Error("两个虚拟数字的进制不同，暂时只支持相同进制的数字相加");
         let max=this.isMax(number,true);
         if(max){
-            //如果max为空，则是说明相等，否则，将两个数的长度强行相等，长度小的前面补flag.value 也就是虚无
+            //如果max为空，则是说明相等，否则，将两个数的长度强行相等，长度小的前面补flag.value
             if(max===number){
                 this.padStart(this,number)
             }else {
@@ -165,7 +165,7 @@ class NumberString {
         }
         return _this.value
     }
-    //判断那个数字大
+    //判断那个数字大，没考虑首位为0的情况
     isMax(number,onlyLength){
         let cur=this.getFlag();
         let value=this.value[Symbol.iterator]();

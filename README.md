@@ -1,4 +1,4 @@
-# add
+# 此文可以带领你认识加法的魅力
 * 为什么需要数字？
 * 无限进制下1+1=2计算逻辑
 * 为什么需要有限进制？
@@ -234,7 +234,7 @@ class NumberString {
         if (this.system!==number.system)throw new Error("两个虚拟数字的进制不同，暂时只支持相同进制的数字相加");
         let max=this.isMax(number,true);
         if(max){
-            //如果max为空，则是说明相等，否则，将两个数的长度强行相等，长度小的前面补flag.value 也就是虚无
+            //如果max为空，则是说明相等，否则，将两个数的长度强行相等，长度小的前面补flag.value
             if(max===number){
                 this.padStart(this,number)
             }else {
@@ -338,7 +338,7 @@ class NumberString {
         }
         return _this.value
     }
-    //判断那个数字大
+    //判断那个数字大，没考虑首位为0的情况
     isMax(number,onlyLength){
         let cur=this.getFlag();
         let value=this.value[Symbol.iterator]();
@@ -432,6 +432,11 @@ NumberString.flag = {
     console.log(a.add(b));
 })();
 ```
+## 总结
++ 为什么1+2=3，因为根据链式结构的的移动1+1+1，最后移动到3的位置了。
++ 为什么2>1 ，因为根据链式结构的遍历得知，1先到，2后到，得出2在1的后面，先到的值是小的。
++ 为什么20>05，谁的长度长谁大，长度相等时候，谁的首位数大谁大，首位数大小比较逻辑同样也是遍历链式结构得来的。（上面没有考虑首位数为0的操作，首位数为0应该去除。）
 
-因个人能力有限，以上内容多有疏漏，欢迎大家指正
+
+加法借鉴了小学的加法思路，因个人能力有限，以上内容多有疏漏，欢迎大家指正。
 ##  [完整代码地址](https://github.com/11341684/add)
